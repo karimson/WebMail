@@ -1,6 +1,8 @@
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -12,8 +14,9 @@ public class Mail
 	String smtpServer;
 	String message;
 	DataOutputStream mailSocketOut = null;
-	DataInputStream mailSocketIn = null;
+	BufferedReader mailSocketIn = null;
 	Socket mailSocket = null;
+	String output = "";
 	
 	public void parseMailData(String data)
 	{
@@ -30,7 +33,7 @@ public class Mail
 		{
 			mailSocket = new Socket("mail.ik2213.lab", 25); 
 			mailSocketOut = new DataOutputStream(mailSocket.getOutputStream());
-			mailSocketIn = new DataInputStream(mailSocket.getInputStream());
+			mailSocketIn = new BufferedReader(new InputStreamReader(mailSocket.getInputStream()));
 		}
 		catch(IOException e)
 		{
@@ -39,20 +42,55 @@ public class Mail
 		
 		try {
 			mailSocketOut.writeBytes("HELO someone.kth.se\r\n");
+			if (mailSocketIn.ready())
+			{	
+				System.out.println(mailSocketIn.readLine());
+			}
+			
 			mailSocketOut.writeBytes("MAIL FROM:<" + from + ">\r\n");
+			if (mailSocketIn.ready())
+			{	
+				System.out.println(mailSocketIn.readLine());
+			}
+			
 			mailSocketOut.writeBytes("RCPT TO:<" + to + ">\r\n");
+			
+			if (mailSocketIn.ready())
+			{	
+				System.out.println(mailSocketIn.readLine());
+			}
 			mailSocketOut.writeBytes("SUBJECT: " + subject +"\r\n");
+			
+			if (mailSocketIn.ready())
+			{	
+				System.out.println(mailSocketIn.readLine());
+			}
 			mailSocketOut.writeBytes("DATA" + "\r\n");
+			
+			if (mailSocketIn.ready())
+			{	
+				System.out.println(mailSocketIn.readLine());
+			}
 			mailSocketOut.writeBytes(message + "\r\n");
+			
+			if (mailSocketIn.ready())
+			{	
+				System.out.println(mailSocketIn.readLine());
+			}
 			mailSocketOut.writeBytes("\r\n.\r\n");
+			
+			if (mailSocketIn.ready())
+			{	
+				System.out.println(mailSocketIn.readLine());
+			}
 			mailSocketOut.writeBytes("QUIT\r\n");
 			
-			String responseline;
-		    while((responseline = mailSocketIn.readLine())!=null)
-		    {  // System.out.println(responseline);
-		        if(responseline.indexOf("Ok") != -1)
-		            break;
-		    }
+			if (mailSocketIn.ready())
+			{	
+				System.out.println(mailSocketIn.readLine());
+			}
+			
+			
 		    
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -60,8 +98,9 @@ public class Mail
 		
 		
 		//KOLLA respons från servern
+		
 
-		return "ALLES GUT";
+		return "fest";
 		
 	}
 }

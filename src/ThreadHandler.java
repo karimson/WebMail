@@ -28,7 +28,6 @@ public class ThreadHandler extends Thread
 			while(in.ready())
 			{
 				inputLine = in.readLine();
-				System.out.println(inputLine);
 				rrh.processRequest(inputLine);
 			}
 			String outLine = rrh.processOutput();
