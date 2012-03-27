@@ -48,7 +48,7 @@ public class RequestResponseHandler
 		{
 			httpModel.acceptCharset = request.substring(15).trim();
 		} 	
-		else if(httpModel.type.equals("POST") && request.startsWith("FROM"))
+		if(httpModel.type.equals("POST") && request.startsWith("FROM"))
 		{
 			httpModel.mailData = request;
 		}
@@ -61,11 +61,11 @@ public class RequestResponseHandler
 		String response = "";
 		BufferedReader in = null;
 		
-		if(httpModel.type.equals("POST") && httpModel.path.equals("/mail")) 
+		if(httpModel.type.equals("POST")) 
 		{
 			
 			mail.parseMailData(httpModel.mailData);
-			data = mail.sendMail();
+			mail.sendMail();
 			
 		} 
 		else{

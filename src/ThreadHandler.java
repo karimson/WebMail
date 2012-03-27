@@ -27,7 +27,7 @@ public class ThreadHandler extends Thread
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			httpModel = new HTTPModel();
 			String inputLine = in.readLine();
-			if ((inputLine.contains("GET") || inputLine.contains("POST")) && inputLine != null )
+			if (inputLine != null && (inputLine.contains("GET") || inputLine.contains("POST")))
 			{
 				rrh.processRequest(inputLine, httpModel);		
 				while(in.ready())
@@ -39,11 +39,10 @@ public class ThreadHandler extends Thread
 				String outLine = rrh.processOutput(httpModel);
 				//System.out.println(outLine);
 				out.print(outLine);
-				
 			}
 			else
 			{
-				System.out.println("FAKEEEEEEEEEEEEE");
+				System.out.println("Command not supported");
 			}
 			
 			
