@@ -6,10 +6,9 @@ import java.io.IOException;
 
 public class RequestResponseHandler
 {
-	public static HTTPModel httpModel = new HTTPModel();
 	public static Mail mail = new Mail();
 	
-	public void processRequest(String request)
+	public void processRequest(String request, HTTPModel httpModel)
 	{
 		if(request.startsWith("GET"))
 		{
@@ -55,7 +54,7 @@ public class RequestResponseHandler
 		}
 	}
 
-	public String processOutput() 
+	public String processOutput(HTTPModel httpModel) 
 	{
 		String data = "";
 		String inputLine = "";

@@ -7,7 +7,7 @@ import java.net.Socket;
 
 public class ThreadHandler extends Thread
 {
-	private Socket socket;
+	private Socket socket = null;
 	
 	public ThreadHandler(Socket inputSocket)
 	{
@@ -19,20 +19,33 @@ public class ThreadHandler extends Thread
 		RequestResponseHandler rrh = new RequestResponseHandler();
 		PrintWriter out = null;
 		BufferedReader in = null;
+		HTTPModel httpModel;
+	
 		try 
 		{
 			out = new PrintWriter(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			
-			String inputLine;			
-			while(in.ready())
+			httpModel = new HTTPModel();
+			String inputLine = in.readLine();
+			if ((inputLine.contains("GET") || inputLine.contains("POST")) && inputLine != null )
 			{
-				inputLine = in.readLine();
-				rrh.processRequest(inputLine);
+				rrh.processRequest(inputLine, httpModel);		
+				while(in.ready())
+				{
+					inputLine = in.readLine();
+					rrh.processRequest(inputLine, httpModel);
+				}
+				System.out.println(httpModel.type);
+				String outLine = rrh.processOutput(httpModel);
+				//System.out.println(outLine);
+				out.print(outLine);
+				
 			}
-			String outLine = rrh.processOutput();
-			System.out.println(outLine);
-			out.print(outLine);
+			else
+			{
+				System.out.println("FAKEEEEEEEEEEEEE");
+			}
+			
 			
 			out.close();
 			in.close();
