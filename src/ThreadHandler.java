@@ -36,6 +36,7 @@ public class ThreadHandler extends Thread
 					rrh.processRequest(inputLine, httpModel);
 				}
 				System.out.println(httpModel.type);
+                                System.out.println(httpModel.path);
 				rrh.processOutput(httpModel, out);
 			}
 			else

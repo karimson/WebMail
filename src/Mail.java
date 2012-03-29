@@ -23,7 +23,6 @@ public class Mail {
 		from = data.substring(data.indexOf("FROM=")+5, data.indexOf("&", data.indexOf("FROM=")));
 		to = data.substring(data.indexOf("TO=") + 3, data.indexOf("&", data.indexOf("TO=")));
 		subject = data.substring(data.indexOf("SUBJECT=")+8, data.indexOf("&", data.indexOf("SUBJECT=")));
-		smtpServer = data.substring(data.indexOf("SERVER=")+7, data.indexOf("&", data.indexOf("SERVER=")));
 		message = data.substring(data.indexOf("MESSAGE=")+8, data.indexOf("&SENDBUTTON=Send"));
 	}
 
