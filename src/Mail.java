@@ -27,10 +27,15 @@ public class Mail {
 		message = data.substring(data.indexOf("MESSAGE=")+8, data.indexOf("&SENDBUTTON=Send"));
 	}
 
-	public void sendMail() {
+	public String sendMail() {
 		try {
                         NsLookup ns = new NsLookup();
-			mailSocket = new Socket(ns.mxLookup(from.split("@")[1]), 25);
+                        String mxServer = ns.mxLookup(to.split("%40")[1]);
+                        
+                        if(mxServer == "")
+                            return "Server Not Found";
+                        
+			mailSocket = new Socket(ns.mxLookup(to.split("%40")[1]), 25);
 			out = new BufferedWriter(new OutputStreamWriter(
 					mailSocket.getOutputStream()));
 			in = new BufferedReader(new InputStreamReader(mailSocket.getInputStream(), "ISO-8859-1"));
@@ -53,6 +58,8 @@ public class Mail {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+                
+                return "OK";
 	}
 
 	public void send(BufferedReader in, BufferedWriter out, String cmd, boolean blocking) 

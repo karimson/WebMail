@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 
 public class RequestResponseHandler
@@ -54,51 +51,56 @@ public class RequestResponseHandler
 		}
 	}
 
-	public String processOutput(HTTPModel httpModel) 
-	{
-		String data = "";
-		String inputLine = "";
-		String response = "";
-		BufferedReader in = null;
-		
-		if(httpModel.type.equals("POST")) 
-		{
-			
-			mail.parseMailData(httpModel.mailData);
-			mail.sendMail();
-			
-		} 
-		else{
-			try 
-			{
-				in = new BufferedReader(new FileReader("webmail.html"));
-			} 
-			catch (FileNotFoundException e)
-			{
-				System.out.println("No such file");
-			}
-			try 
-			{
-				while ((inputLine = in.readLine()) != null) 
-				{
-					data += inputLine + "\r\n";
-				}
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
-		
-		}
-		response = "HTTP/1.0 200 OK\r\n";
-		response += "Content-Type: text/html\r\n";
-		response += "Content-Length: " + data.length() + "\r\n";
-		response += "Connection: close\r\n";
-		response += "\r\n";
-		response += data;
-
-		return response;
-		
+	public void processOutput(HTTPModel httpModel, PrintWriter out) 
+	{	
+            if(httpModel.type.equals("POST")) 
+            {
+                mail.parseMailData(httpModel.mailData);
+                if(mail.sendMail().equals("OK"))
+                    out.write(getPage("mailSent.html"));
+                else
+                    out.write(getPage("mailNotSent.html"));
+            } 
+            else
+            {
+               out.write(getPage("webmail.html"));
+            }
 	}
+        
+        public String getPage(String fileName)
+        {
+            BufferedReader in = null;
+            String data = "";
+            String inputLine = "";
+            String response = "";
+            
+            try 
+            {
+		in = new BufferedReader(new FileReader(fileName));
+            } 
+            catch (FileNotFoundException e)
+            {
+		System.out.println("File not found");
+            }
+            try 
+            {
+		while ((inputLine = in.readLine()) != null) 
+		{
+                    data += inputLine + "\r\n";
+		}
+            } 
+            catch (IOException e) 
+            {
+                e.printStackTrace();
+            }
+            response = "HTTP/1.0 200 OK\r\n";
+            response += "Content-Type: text/html\r\n";
+            response += "Content-Length: " + data.length() + "\r\n";
+            response += "Connection: close\r\n";
+            response += "\r\n";
+            response += data;
+            
+            return response;
+        }
 	
 }

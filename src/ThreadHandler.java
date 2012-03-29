@@ -36,15 +36,12 @@ public class ThreadHandler extends Thread
 					rrh.processRequest(inputLine, httpModel);
 				}
 				System.out.println(httpModel.type);
-				String outLine = rrh.processOutput(httpModel);
-				//System.out.println(outLine);
-				out.print(outLine);
+				rrh.processOutput(httpModel, out);
 			}
 			else
 			{
 				System.out.println("Command not supported");
 			}
-			
 			
 			out.close();
 			in.close();
