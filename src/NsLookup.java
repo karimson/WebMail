@@ -1,4 +1,3 @@
-
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -65,10 +64,10 @@ public class NsLookup
                     Logger.getLogger(NsLookup.class.getName()).log(Level.SEVERE, null, ex);
                     System.out.println("Error in nameserver lookup");
                 }
+               
                 String[] parts = mxAttr.split(" ");
-                // Split off the priority, and take the last field
+                
                 server = parts[parts.length - 1];
-            
         }
      
     return server;
