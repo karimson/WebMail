@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.URLDecoder;
 import java.net.InetAddress;
+
 public class Mail {
 	String from;
 	String to;
@@ -28,7 +29,8 @@ public class Mail {
 
 	public void sendMail() {
 		try {
-			mailSocket = new Socket("mail.ik2213.lab", 25);
+                        NsLookup ns = new NsLookup();
+			mailSocket = new Socket(ns.mxLookup(from.split("@")[1]), 25);
 			out = new BufferedWriter(new OutputStreamWriter(
 					mailSocket.getOutputStream()));
 			in = new BufferedReader(new InputStreamReader(mailSocket.getInputStream(), "ISO-8859-1"));

@@ -12,6 +12,12 @@ local.properties
 .classpath
 .settings/
 .loadpath
+build.xml
+manifest.mf
+build-impl.xml
+genfiles.properties
+project.properties
+project.xml
 
 # External tool builders
 .externalToolBuilders/
@@ -25,3 +31,5 @@ local.properties
 # PDT-specific
 .buildpath
 
+/nbproject/private/
+/build/
