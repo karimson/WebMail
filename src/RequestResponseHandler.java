@@ -56,6 +56,7 @@ public class RequestResponseHandler
             if(httpModel.type.equals("POST")) 
             {
                 mail.parseMailData(httpModel.mailData);
+<<<<<<< HEAD
                 try
                 {
 					if(mail.sendMail().equals("OK"))
@@ -68,6 +69,14 @@ public class RequestResponseHandler
 					e.printStackTrace();
 				}
             } 
+=======
+                String result = mail.sendMail();
+        /*        if(mail.sendMail().equals("OK"))
+                    out.write(getPage("mailSent.html"));
+                else
+                    out.write(getPage("mailNotSent.html"));
+        */  } 
+>>>>>>> 68fc4168608ad24223440fcff8c8a11f609d8abd
             else
             {
                out.write(getPage("webmail.html"));

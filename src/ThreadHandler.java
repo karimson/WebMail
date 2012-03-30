@@ -43,6 +43,7 @@ public class ThreadHandler extends Thread
 				System.out.println("Command not supported");
 			}
 			
+			
 			out.close();
 			in.close();
 			socket.close();
