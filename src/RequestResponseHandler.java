@@ -1,9 +1,10 @@
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class RequestResponseHandler
-{
-	
+{	
 	public void processRequest(String request, HTTPModel httpModel, Mail mail)
 	{
 		if(request.startsWith("GET"))
@@ -55,10 +56,17 @@ public class RequestResponseHandler
             if(httpModel.type.equals("POST")) 
             {
                 mail.parseMailData(httpModel.mailData);
-                if(mail.sendMail().equals("OK"))
-                    out.write(getPage("mailSent.html"));
-                else
-                    out.write(getPage("mailNotSent.html"));
+                try 
+                {
+                    if(mail.sendMail().equals("OK"))
+                        out.write(getPage("mailSent.html"));
+                    else
+                        out.write(getPage("mailNotSent.html"));
+                } 
+                catch (UnsupportedEncodingException ex) 
+                {
+                    Logger.getLogger(RequestResponseHandler.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } 
             else
             {
