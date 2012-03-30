@@ -15,7 +15,7 @@ import javax.naming.directory.*;
  *
  * @author Alen
  */
-public class NsLookup 
+public class NsLookup
 {
     Properties env = new Properties();
     InitialDirContext idc;

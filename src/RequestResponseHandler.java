@@ -3,9 +3,8 @@ import java.io.*;
 
 public class RequestResponseHandler
 {
-	public static Mail mail = new Mail();
 	
-	public void processRequest(String request, HTTPModel httpModel)
+	public void processRequest(String request, HTTPModel httpModel, Mail mail)
 	{
 		if(request.startsWith("GET"))
 		{
@@ -51,17 +50,16 @@ public class RequestResponseHandler
 		}
 	}
 
-	public void processOutput(HTTPModel httpModel, PrintWriter out) 
+	public void processOutput(HTTPModel httpModel, PrintWriter out, Mail mail) 
 	{	
             if(httpModel.type.equals("POST")) 
             {
                 mail.parseMailData(httpModel.mailData);
-                String result = mail.sendMail();
-        /*        if(mail.sendMail().equals("OK"))
+                if(mail.sendMail().equals("OK"))
                     out.write(getPage("mailSent.html"));
                 else
                     out.write(getPage("mailNotSent.html"));
-        */  } 
+            } 
             else
             {
                out.write(getPage("webmail.html"));

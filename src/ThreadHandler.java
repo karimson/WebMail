@@ -20,6 +20,7 @@ public class ThreadHandler extends Thread
 		PrintWriter out = null;
 		BufferedReader in = null;
 		HTTPModel httpModel;
+                Mail mail = new Mail();
 	
 		try 
 		{
@@ -29,20 +30,22 @@ public class ThreadHandler extends Thread
 			String inputLine = in.readLine();
 			if (inputLine != null && (inputLine.contains("GET") || inputLine.contains("POST")))
 			{
-				rrh.processRequest(inputLine, httpModel);		
+                            if(inputLine.split(" ")[1].equals("/"))
+                            {
+                                rrh.processRequest(inputLine, httpModel, mail);		
 				while(in.ready())
 				{
 					inputLine = in.readLine();
-					rrh.processRequest(inputLine, httpModel);
+					rrh.processRequest(inputLine, httpModel, mail);
 				}
 				System.out.println(httpModel.type);
-				rrh.processOutput(httpModel, out);
+				rrh.processOutput(httpModel, out, mail);
+                            }
 			}
 			else
 			{
 				System.out.println("Command not supported");
 			}
-			
 			
 			out.close();
 			in.close();
