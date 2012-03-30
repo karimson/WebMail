@@ -3,9 +3,10 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URLDecoder;
-import java.net.InetAddress;
+import java.net.URLEncoder;
 
 public class Mail {
 	String from;
@@ -27,7 +28,7 @@ public class Mail {
 		message = data.substring(data.indexOf("MESSAGE=")+8, data.indexOf("&SENDBUTTON=Send"));
 	}
 
-	public String sendMail() {
+	public String sendMail() throws UnsupportedEncodingException {
 		try {
                         NsLookup ns = new NsLookup();
                         String mxServer = ns.mxLookup(to.split("%40")[1]);
@@ -38,23 +39,30 @@ public class Mail {
 			mailSocket = new Socket(ns.mxLookup(to.split("%40")[1]), 25);
 			out = new BufferedWriter(new OutputStreamWriter(
 					mailSocket.getOutputStream()));
-			in = new BufferedReader(new InputStreamReader(mailSocket.getInputStream(), "ISO-8859-1"));
+			in = new BufferedReader(new InputStreamReader(mailSocket.getInputStream(), "ISO-8859-15"));
 		} catch (IOException e) {
 			System.out.println("Error connecting to SMTP-server.");
 		}
 
 		send(in, out, "HELO someone.somebody.se", true);
-		send(in, out, "MAIL FROM: <" + from + ">", true);
-		send(in, out, "RCPT TO: <" + to + ">", true);
+		send(in, out, "MAIL FROM: <" + URLDecoder.decode(from, "UTF-8") + ">", true);
+		send(in, out, "RCPT TO: <" + URLDecoder.decode(to, "UTF-8") + ">", true);
 		send(in, out, "DATA", true);
 		send(in, out, "Subject: " + subject, false);
-		send(in, out, "From: <" + from + ">", false);
+		send(in, out, "From: <" + URLDecoder.decode(from, "UTF-8") + ">", false);
 		send(in, out, "\n", false);
-		send(in, out, message, false);
+		System.out.println("MESSAGE: " + message);
+		String test = convertToSwedish(message);
+		System.out.println(test);
+		System.out.println("TEST:::: " + URLDecoder.decode(message, "ISO-8859-15"));
+		System.out.println("ENCODAT: " + new String(test.getBytes("UTF-8")));
+		send(in, out, new String(test.getBytes("UTF-8")), false);
 		send(in, out, "\n.\n", false);
 		send(in, out, "QUIT", true);
 		try {
 			mailSocket.close();
+			out.close();
+			in.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -66,16 +74,7 @@ public class Mail {
 	{
 		try 
 		{
-			if (cmd.contains("%E5"))
-			{
-				String test = convertToSwedish(cmd);
-				System.out.println(test);
-				out.write(test + "\n");
-			}
-			else
-			{
-				out.write(URLDecoder.decode(cmd + "\n", "UTF-8"));				
-			}
+			out.write(cmd + "\n");				
 			out.flush();
 			System.out.println(cmd);
 			if (blocking)
@@ -96,6 +95,7 @@ public class Mail {
 		{
 			input = input.replace("%E5","å");			
 		}
+		
 		if (input.contains("%E4"))
 		{
 			input.replace("%E4","ä");			
@@ -109,7 +109,7 @@ public class Mail {
 		input.replace("%C4","Ä");
 		input.replace("%D6","Ö");*/
 		
-		return input = input.replace("%E5", "å");
+		return (input = input.replace("%E5", "å"));
 	}
 
 }

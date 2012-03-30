@@ -56,10 +56,17 @@ public class RequestResponseHandler
             if(httpModel.type.equals("POST")) 
             {
                 mail.parseMailData(httpModel.mailData);
-                if(mail.sendMail().equals("OK"))
-                    out.write(getPage("mailSent.html"));
-                else
-                    out.write(getPage("mailNotSent.html"));
+                try
+                {
+					if(mail.sendMail().equals("OK"))
+					    out.write(getPage("mailSent.html"));
+					else
+					    out.write(getPage("mailNotSent.html"));
+				}
+                catch (UnsupportedEncodingException e)
+                {
+					e.printStackTrace();
+				}
             } 
             else
             {

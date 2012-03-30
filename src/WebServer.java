@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -7,7 +8,7 @@ public class WebServer
 	private static boolean listen;
 	
 	
-	public static void main(String [] args)
+	public static void main(String [] args) throws UnsupportedEncodingException
 	{
 		listen = true;
 		int port = 8000;
