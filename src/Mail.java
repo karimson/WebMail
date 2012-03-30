@@ -43,7 +43,7 @@ public class Mail {
 		} catch (IOException e) {
 			System.out.println("Error connecting to SMTP-server.");
 		}
-
+		//fittbozz
 		send(in, out, "HELO someone.somebody.se", true);
 		send(in, out, "MAIL FROM: <" + URLDecoder.decode(from, "UTF-8") + ">", true);
 		send(in, out, "RCPT TO: <" + URLDecoder.decode(to, "UTF-8") + ">", true);
