@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 public class RequestResponseHandler
 {	
-	public void processRequest(String request, HTTPModel httpModel, Mail mail)
+	public void processRequest(String request, HTTPModel httpModel)
 	{
 		if(request.startsWith("GET"))
 		{
@@ -48,26 +48,27 @@ public class RequestResponseHandler
 		if(httpModel.type.equals("POST") && request.startsWith("FROM"))
 		{
 			httpModel.mailData = request;
+                        System.out.println(request);
 		}
 	}
 
 	public void processOutput(HTTPModel httpModel, PrintWriter out, Mail mail) 
-	{	
-            if(httpModel.type.equals("POST")) 
+	{
+            if(httpModel.type.equals("POST"))
             {
                 mail.parseMailData(httpModel.mailData);
-                try 
+                try
                 {
                     if(mail.sendMail().equals("OK"))
                         out.write(getPage("mailSent.html"));
                     else
                         out.write(getPage("mailNotSent.html"));
-                } 
+                }
                 catch (UnsupportedEncodingException ex) 
                 {
                     Logger.getLogger(RequestResponseHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } 
+            }
             else
             {
                out.write(getPage("webmail.html"));
@@ -84,7 +85,7 @@ public class RequestResponseHandler
             try 
             {
 		in = new BufferedReader(new FileReader(fileName));
-            } 
+            }
             catch (FileNotFoundException e)
             {
 		System.out.println("File not found");
@@ -106,6 +107,14 @@ public class RequestResponseHandler
             response += "Connection: close\r\n";
             response += "\r\n";
             response += data;
+            
+            return response;
+        }
+        
+        public String get404()
+        {
+            String response = "HTTP/1.0 404 Not Found\r\n";
+            response += "\r\n";
             
             return response;
         }

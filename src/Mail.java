@@ -50,12 +50,7 @@ public class Mail {
 		send(in, out, "Subject: " + subject, false);
 		send(in, out, "From: <" + URLDecoder.decode(from, "UTF-8") + ">", false);
 		send(in, out, "\n", false);
-		System.out.println("MESSAGE: " + message);
-		String test = convertToSwedish(message);
-		System.out.println(test);
-		System.out.println("TEST:::: " + URLDecoder.decode(message, "ISO-8859-15"));
-		System.out.println("ENCODAT: " + new String(test.getBytes("UTF-8")));
-		send(in, out, new String(test.getBytes("UTF-8")), false);
+		send(in, out, message, false);
 		send(in, out, "\n.\n", false);
 		send(in, out, "QUIT", true);
 		try {

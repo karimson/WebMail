@@ -28,12 +28,15 @@ public class WebServer
 		
 		while(listen)
 		{
-			try {
+			try 
+                        {
 				Socket clientSocket = serverSocket.accept();
 				ThreadHandler handler = new ThreadHandler(clientSocket);
 				handler.start();
 				System.out.println("Connection accepted");
-			} catch (IOException e) {
+			} 
+                        catch (IOException e) 
+                        {
 				e.printStackTrace();
 			} 
 		}

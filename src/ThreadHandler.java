@@ -20,26 +20,34 @@ public class ThreadHandler extends Thread
 		PrintWriter out = null;
 		BufferedReader in = null;
 		HTTPModel httpModel;
-                Mail mail = new Mail();
+                Mail mail;
 	
 		try 
 		{
 			out = new PrintWriter(socket.getOutputStream());
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			httpModel = new HTTPModel();
-			String inputLine = in.readLine();
-			if (inputLine != null && (inputLine.contains("GET") || inputLine.contains("POST")))
+			mail = new Mail();
+                        String inputLine = "";
+                        	
+                        while((inputLine = in.readLine()) != null)
 			{
-                            if(inputLine.split(" ")[1].equals("/"))
+                                System.out.println(inputLine);
+				rrh.processRequest(inputLine, httpModel);
+                                System.out.println(inputLine);
+			}
+                        
+			System.out.println(httpModel.type);
+                                
+			if (httpModel.type.equals("GET") || httpModel.type.equals("POST"))
+			{
+                            if(httpModel.path.equals("/"))
                             {
-                                rrh.processRequest(inputLine, httpModel, mail);		
-				while(in.ready())
-				{
-					inputLine = in.readLine();
-					rrh.processRequest(inputLine, httpModel, mail);
-				}
-				System.out.println(httpModel.type);
 				rrh.processOutput(httpModel, out, mail);
+                            }
+                            else
+                            {
+                                out.write(rrh.get404());
                             }
 			}
 			else
