@@ -13,7 +13,6 @@ public class WebServer
 		listen = true;
 		int port = 8000;
 		ServerSocket serverSocket = null;
-		
 		try
 		{
 			serverSocket = new ServerSocket(port); 

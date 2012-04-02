@@ -6,7 +6,6 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 public class Mail {
 	String from;
@@ -48,8 +47,16 @@ public class Mail {
 		send(in, out, "DATA", true);
 		send(in, out, "Subject: " + subject, false);
 		send(in, out, "From: <" + URLDecoder.decode(from, "UTF-8") + ">", false);
-		send(in, out, "\n", false);
-		send(in, out, encodeMessage(URLDecoder.decode(message, "UTF-8")), false);
+		send(in, out, "MIME-Version: 1.0", false);
+        send(in, out, "Content-Type: multipart/mixed; boundary=\"=_\"", false);
+        send(in, out, "--=_", false);
+        send(in, out, "Content-Type: text/plain; charset=iso-8859-1", false);
+        send(in, out, "Content-Transfer-Encoding: quoted-printable", false);
+        send(in, out, "\n", false);
+        message = message.replace("%", "=");
+        
+    	send(in, out, message, false);
+        send(in, out, "\n--=_--", false);
 		send(in, out, "\n.\n", false);
 		send(in, out, "QUIT", true);
 		try {
@@ -80,22 +87,6 @@ public class Mail {
 		{
 			e.printStackTrace();
 		}
-	}
-	
-	public String encodeMessage(String input)
-	{
-		String response = "";
-		input = input.replace("%", "=");
-		
-		response = "MIME-Version: 1.0\r\n";
-        response += "Content-Type: multipart/mixed; boundary=frontier\r\n";
-        response += "--frontier\r\nContent-Type: text/plain\r\n";
-        response += "--frontier\r\nContent-Transfer-Encoding: quoted-printable\r\n";
-        response += input;
-        response += "--frontier--";
-		
-		
-		return response;
 	}
 
 }
