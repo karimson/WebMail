@@ -19,18 +19,19 @@ public class Mail {
 	BufferedReader in = null;
 	Socket mailSocket = null;
 	String output = "";
-        String tempDelay;
         int delay;
         Calendar sendTime;
+        String status;
 
 	public void parseMailData(String data) 
 	{
 		from = data.substring(data.indexOf("FROM=")+5, data.indexOf("&", data.indexOf("FROM=")));
 		to = data.substring(data.indexOf("TO=") + 3, data.indexOf("&", data.indexOf("TO=")));
-		tempDelay = data.substring(data.indexOf("DELAY=")+6, data.indexOf("&", data.indexOf("DELAY=")));
+		String tempDelay = data.substring(data.indexOf("DELAY=")+6, data.indexOf("&", data.indexOf("DELAY=")));
                 subject = data.substring(data.indexOf("SUBJECT=")+8, data.indexOf("&", data.indexOf("SUBJECT=")));
 		message = data.substring(data.indexOf("MESSAGE=")+8, data.indexOf("&SENDBUTTON=Send"));
                 sendTime = sendTime.getInstance();
+                status = "QUEUED";
                 
                 if(tempDelay != null && !tempDelay.equals(null) && !tempDelay.equals("") && !tempDelay.equals(" "))
                 {
@@ -41,13 +42,13 @@ public class Mail {
                  
 	}
 
-	public String sendMail() throws UnsupportedEncodingException {
+	public void sendMail() throws UnsupportedEncodingException {
 		try {
                         NsLookup ns = new NsLookup();
                         String mxServer = ns.mxLookup(to.split("%40")[1]);
                         
                         if(mxServer == "")
-                            return "Server Not Found";
+                            status = "SERVER NOT FOUND";
                         
 			mailSocket = new Socket(ns.mxLookup(to.split("%40")[1]), 25);
 			out = new BufferedWriter(new OutputStreamWriter(
@@ -81,8 +82,7 @@ public class Mail {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-                
-                return "OK";
+                status = "SENT";
 	}
 
 	public void send(BufferedReader in, BufferedWriter out, String cmd, boolean blocking) 
