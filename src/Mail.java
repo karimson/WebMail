@@ -68,12 +68,15 @@ public class Mail {
         send(in, out, "Content-Type: text/plain; charset=iso-8859-1", false);
         send(in, out, "Content-Transfer-Encoding: quoted-printable", false);
         send(in, out, "\n", false);
+        
         message = message.replace("%", "=");
         message = message.replace("+", " ");
+        
     	send(in, out, message, false);
         send(in, out, "\n--=_--", false);
 		send(in, out, "\n.\n", false);
 		send(in, out, "QUIT", true);
+		
 		try {
 			mailSocket.close();
 			out.close();
