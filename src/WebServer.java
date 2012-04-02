@@ -23,9 +23,14 @@ public class WebServer
 			System.out.println("Error listening to port.");
 			System.exit(0);
 		}
-		
+                
 		System.out.println("Server started, waiting for incoming connections.");
 		
+                QueueHandler queue = new QueueHandler();
+                queue.start();
+                
+                System.out.println("Queue thread started..");
+                               
 		while(listen)
 		{
 			try 
