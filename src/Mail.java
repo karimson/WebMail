@@ -6,6 +6,8 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.Calendar;
 
 public class Mail {
 	String from;
@@ -17,13 +19,26 @@ public class Mail {
 	BufferedReader in = null;
 	Socket mailSocket = null;
 	String output = "";
+        String tempDelay;
+        int delay;
+        Calendar sendTime;
 
 	public void parseMailData(String data) 
 	{
 		from = data.substring(data.indexOf("FROM=")+5, data.indexOf("&", data.indexOf("FROM=")));
 		to = data.substring(data.indexOf("TO=") + 3, data.indexOf("&", data.indexOf("TO=")));
-		subject = data.substring(data.indexOf("SUBJECT=")+8, data.indexOf("&", data.indexOf("SUBJECT=")));
+		tempDelay = data.substring(data.indexOf("DELAY=")+6, data.indexOf("&", data.indexOf("DELAY=")));
+                subject = data.substring(data.indexOf("SUBJECT=")+8, data.indexOf("&", data.indexOf("SUBJECT=")));
 		message = data.substring(data.indexOf("MESSAGE=")+8, data.indexOf("&SENDBUTTON=Send"));
+                sendTime = sendTime.getInstance();
+                
+                if(tempDelay != null && !tempDelay.equals(null) && !tempDelay.equals("") && !tempDelay.equals(" "))
+                {
+                    delay = Integer.parseInt(tempDelay);
+                    sendTime.add(Calendar.SECOND,delay);
+                }
+                
+                 
 	}
 
 	public String sendMail() throws UnsupportedEncodingException {
