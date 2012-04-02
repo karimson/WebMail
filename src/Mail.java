@@ -56,7 +56,6 @@ public class Mail {
 		} catch (IOException e) {
 			System.out.println("Error connecting to SMTP-server.");
 		}
-		//fittbozz
 		send(in, out, "HELO someone.somebody.se", true);
 		send(in, out, "MAIL FROM: <" + URLDecoder.decode(from, "UTF-8") + ">", true);
 		send(in, out, "RCPT TO: <" + URLDecoder.decode(to, "UTF-8") + ">", true);
@@ -64,7 +63,7 @@ public class Mail {
 		send(in, out, "Subject: " + subject, false);
 		send(in, out, "From: <" + URLDecoder.decode(from, "UTF-8") + ">", false);
 		send(in, out, "\n", false);
-		send(in, out, message, false);
+		send(in, out, encodeMessage(URLDecoder.decode(message, "UTF-8")), false);
 		send(in, out, "\n.\n", false);
 		send(in, out, "QUIT", true);
 		try {
@@ -97,27 +96,20 @@ public class Mail {
 		}
 	}
 	
-	public String convertToSwedish(String input)
+	public String encodeMessage(String input)
 	{
-		/*if (input.contains("%E5"))
-		{
-			input = input.replace("%E5","å");			
-		}
+		String response = "";
+		input = input.replace("%", "=");
 		
-		if (input.contains("%E4"))
-		{
-			input.replace("%E4","ä");			
-		}
-		if (input.contains("%E5"))
-		{
-			input.replace("%F6","ö");			
-		}
+		response = "MIME-Version: 1.0\r\n";
+        response += "Content-Type: multipart/mixed; boundary=frontier\r\n";
+        response += "--frontier\r\nContent-Type: text/plain\r\n";
+        response += "--frontier\r\nContent-Transfer-Encoding: quoted-printable\r\n";
+        response += input;
+        response += "--frontier--";
 		
-		input.replace("%C5","Å");
-		input.replace("%C4","Ä");
-		input.replace("%D6","Ö");*/
 		
-		return (input = input.replace("%E5", "å"));
+		return response;
 	}
 
 }

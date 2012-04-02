@@ -45,10 +45,9 @@ public class RequestResponseHandler
 		{
 			httpModel.acceptCharset = request.substring(15).trim();
 		} 	
-		if(httpModel.type.equals("POST") && request.startsWith("FROM"))
+		else if(httpModel.type.equals("POST") && request.startsWith("FROM"))
 		{
 			httpModel.mailData = request;
-                        System.out.println(request);
 		}
 	}
 
@@ -74,49 +73,50 @@ public class RequestResponseHandler
                out.write(getPage("webmail.html"));
             }
 	}
+	
         
-        public String getPage(String fileName)
-        {
-            BufferedReader in = null;
-            String data = "";
-            String inputLine = "";
-            String response = "";
-            
-            try 
-            {
-		in = new BufferedReader(new FileReader(fileName));
-            }
-            catch (FileNotFoundException e)
-            {
-		System.out.println("File not found");
-            }
-            try 
-            {
-		while ((inputLine = in.readLine()) != null) 
-		{
-                    data += inputLine + "\r\n";
-		}
-            } 
-            catch (IOException e) 
-            {
-                e.printStackTrace();
-            }
-            response = "HTTP/1.0 200 OK\r\n";
-            response += "Content-Type: text/html\r\n";
-            response += "Content-Length: " + data.length() + "\r\n";
-            response += "Connection: close\r\n";
-            response += "\r\n";
-            response += data;
-            
-            return response;
-        }
+    public String getPage(String fileName)
+    {
+        BufferedReader in = null;
+        String data = "";
+        String inputLine = "";
+        String response = "";
         
-        public String get404()
+        try 
         {
-            String response = "HTTP/1.0 404 Not Found\r\n";
-            response += "\r\n";
-            
-            return response;
+        	in = new BufferedReader(new FileReader(fileName));
         }
+        catch (FileNotFoundException e)
+        {
+        	System.out.println("File not found");
+        }
+        try 
+        {
+        	while ((inputLine = in.readLine()) != null) 
+        	{
+                data += inputLine + "\r\n";
+        	}
+        } 
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        }
+        response = "HTTP/1.0 200 OK\r\n";
+        response += "Content-Type: text/html\r\n";
+        response += "Content-Length: " + data.length() + "\r\n";
+        response += "Connection: close\r\n";
+        response += "\r\n";
+        response += data;
+        
+        return response;
+    }
+    
+    public String get404()
+    {
+        String response = "HTTP/1.0 404 Not Found\r\n";
+        response += "\r\n";
+        
+        return response;
+    }
 	
 }
