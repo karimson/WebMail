@@ -55,19 +55,19 @@ public class RequestResponseHandler
 	{
             if(httpModel.type.equals("POST"))
             {
-                if(httpModel.path.equals("/status"))
+                if(httpModel.path.contains("status"))
                 {
                     out.write(status);
                 }   
                 else
                 {
-                   out.write("Mail queued, check status page for delivery notification.");
+                   out.write("Mail queued, check status page.");
                 }
                 
             }
             else
             {
-                if(httpModel.path.equals("/status"))
+                if(httpModel.path.contains("status"))
                 {
                    out.write(status);
                 }

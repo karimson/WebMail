@@ -61,10 +61,10 @@ public class ThreadHandler extends Thread
 				{
                                     if(httpModel.path.equals("/") || httpModel.path.equals("/status"))
                                     {
-                                        if(httpModel.type.equals("POST"))
+                                        if(httpModel.type.equals("POST") && !httpModel.path.equals("/status"))
                                         {
                                             mail.parseMailData(httpModel.mailData);
-                                            queue.addMail(mail);  
+                                            queue.addMail(mail);
                                         }
                                         rrh.processOutput(httpModel, out, queue.getStatusPage());
                                     }

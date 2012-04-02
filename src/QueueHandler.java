@@ -1,6 +1,7 @@
 
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class QueueHandler extends Thread
     {
        
         while(true)
-        { 
+        {
             for(int i = 0; waitingMails.size()>i; i++)
             {
                 clock = clock.getInstance();
@@ -31,7 +32,8 @@ public class QueueHandler extends Thread
                         waitingMails.remove(i);
                         
                     } catch (UnsupportedEncodingException ex) {
-                        System.out.println("Failed to send mail");
+                        sentMails.get(i).status = "ERROR SENDING MAIL";
+                        System.out.println("Error sending mail");
                     }
                 }
             }
@@ -43,17 +45,16 @@ public class QueueHandler extends Thread
         waitingMails.add(newMail);
     }
     
-    public String getStatusPage()
+    public String getStatusPage() throws UnsupportedEncodingException
     {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         
-        result = "--- STATUS ---\n"
-                + "SENDTIME\tFROM\t\tTO\t\tSTATUS\n";
+        result = "--- STATUS PAGE ---\nSENDTIME\t\tFROM\t\t\tTO\t\t\tSTATUS\n";
         
         for(int i = 0; sentMails.size()>i; i++)
-            result += dateFormat.format(sentMails.get(i).sendTime.getTime()) + "\t\t" + sentMails.get(i).from + "\t\t" + sentMails.get(i).to + "\t\t" + "SENT\n";
+            result += dateFormat.format(sentMails.get(i).sendTime.getTime()) + "\t" + URLDecoder.decode(sentMails.get(i).from, "UTF-8") + "\t" + URLDecoder.decode(sentMails.get(i).to, "UTF-8") + "\t\t" + sentMails.get(i).status + "\n";
         for(int i = 0; waitingMails.size()>i; i++)
-            result += dateFormat.format(waitingMails.get(i).sendTime.getTime()) + "\t\t" + waitingMails.get(i).from + "\t\t" + waitingMails.get(i).to + "\t\t" + "QUEUED\n";
+            result += dateFormat.format(waitingMails.get(i).sendTime.getTime()) + "\t" + URLDecoder.decode(waitingMails.get(i).from, "UTF-8") + "\t" + URLDecoder.decode(waitingMails.get(i).to, "UTF-8") + "\t\t" + waitingMails.get(i).status +"\n";
         
         return result;
     }
