@@ -60,7 +60,7 @@ public class Mail {
 		send(in, out, "MAIL FROM: <" + URLDecoder.decode(from, "UTF-8") + ">", true);
 		send(in, out, "RCPT TO: <" + URLDecoder.decode(to, "UTF-8") + ">", true);
 		send(in, out, "DATA", true);
-		send(in, out, "Subject: " + subject, false);
+		send(in, out, "Subject: " + encodeSubject(subject), false);
 		send(in, out, "From: <" + URLDecoder.decode(from, "UTF-8") + ">", false);
 		send(in, out, "MIME-Version: 1.0", false);
         send(in, out, "Content-Type: multipart/mixed; boundary=\"=_\"", false);
@@ -69,7 +69,7 @@ public class Mail {
         send(in, out, "Content-Transfer-Encoding: quoted-printable", false);
         send(in, out, "\n", false);
         message = message.replace("%", "=");
-        
+        message = message.replace("+", " ");
     	send(in, out, message, false);
         send(in, out, "\n--=_--", false);
 		send(in, out, "\n.\n", false);
@@ -102,6 +102,24 @@ public class Mail {
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	public String encodeSubject(String subject)
+	{
+		if (!subject.equals(""))
+		{
+			subject = subject.replace("+", " ");
+			if (subject.contains("%"))
+			{
+				subject = subject.replace("%", "=?ISO-8859-1?Q?=");
+				return (subject + "?=");
+			}
+		}
+		
+		return "Auto-fill: No Subject";
+
+		
+		
 	}
 
 }
