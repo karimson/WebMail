@@ -8,10 +8,12 @@ import java.net.Socket;
 public class ThreadHandler extends Thread
 {
 	private Socket socket = null;
+        private QueueHandler queue;
 	
-	public ThreadHandler(Socket inputSocket)
+	public ThreadHandler(Socket inputSocket, QueueHandler inputQueue)
 	{
 		this.socket = inputSocket;
+                this.queue = inputQueue;
 	}
 	
 	public void run()
@@ -20,7 +22,7 @@ public class ThreadHandler extends Thread
 		PrintWriter out = null;
 		BufferedReader in = null;
 		HTTPModel httpModel;
-        Mail mail;
+                Mail mail;
 	
 		try 
 		{
@@ -52,27 +54,24 @@ public class ThreadHandler extends Thread
 					}
 					rrh.processRequest(proccessedLine, httpModel);
 				}
-				
-				
-	           /* while((inputLine = in.readLine()) != null)
-				{
-	                                System.out.println(inputLine);
-					rrh.processRequest(inputLine, httpModel);
-	                                System.out.println(inputLine);
-				}
-	            */            
+				          
 				System.out.println(httpModel.type);
 	                                
 				if (httpModel.type.equals("GET") || httpModel.type.equals("POST"))
 				{
-	                if(httpModel.path.equals("/"))
-	                {
-	                	rrh.processOutput(httpModel, out, mail);
-	                }
-	                else
-	                {
-	                    out.write(rrh.get404());
-	                }
+                                    if(httpModel.path.equals("/") || httpModel.path.equals("/status"))
+                                    {
+                                        if(httpModel.type.equals("POST"))
+                                        {
+                                            mail.parseMailData(httpModel.mailData);
+                                            queue.addMail(mail);  
+                                        }
+                                        rrh.processOutput(httpModel, out, queue.getStatusPage());
+                                    }
+                                    else
+                                    {
+                                        out.write(rrh.get404());
+                                    }
 				}
 				else
 				{

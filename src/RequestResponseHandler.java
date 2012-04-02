@@ -51,26 +51,30 @@ public class RequestResponseHandler
 		}
 	}
 
-	public void processOutput(HTTPModel httpModel, PrintWriter out, Mail mail) 
+	public void processOutput(HTTPModel httpModel, PrintWriter out, String status) 
 	{
             if(httpModel.type.equals("POST"))
             {
-                mail.parseMailData(httpModel.mailData);
-                try
+                if(httpModel.path.equals("/status"))
                 {
-                    if(mail.sendMail().equals("OK"))
-                        out.write(getPage("mailSent.html"));
-                    else
-                        out.write(getPage("mailNotSent.html"));
-                }
-                catch (UnsupportedEncodingException ex) 
+                    out.write(status);
+                }   
+                else
                 {
-                    Logger.getLogger(RequestResponseHandler.class.getName()).log(Level.SEVERE, null, ex);
+                   out.write("Mail queued, check status page for delivery notification.");
                 }
+                
             }
             else
             {
-               out.write(getPage("webmail.html"));
+                if(httpModel.path.equals("/status"))
+                {
+                   out.write(status);
+                }
+                else
+                {
+                   out.write(getPage("webmail.html"));
+                }
             }
 	}
 	

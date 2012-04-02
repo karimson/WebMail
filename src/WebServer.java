@@ -36,7 +36,7 @@ public class WebServer
 			try 
                         {
 				Socket clientSocket = serverSocket.accept();
-				ThreadHandler handler = new ThreadHandler(clientSocket);
+				ThreadHandler handler = new ThreadHandler(clientSocket, queue);
 				handler.start();
 				System.out.println("Connection accepted");
 			} 
