@@ -19,19 +19,20 @@ public class Mail {
 	BufferedReader in = null;
 	Socket mailSocket = null;
 	String output = "";
-        int delay;
-        Calendar sendTime;
-        String status;
+    int delay;
+    Calendar sendTime;
+    String status;
 
 	public void parseMailData(String data) 
 	{
+		System.out.println(data);
 		from = data.substring(data.indexOf("FROM=")+5, data.indexOf("&", data.indexOf("FROM=")));
 		to = data.substring(data.indexOf("TO=") + 3, data.indexOf("&", data.indexOf("TO=")));
 		String tempDelay = data.substring(data.indexOf("DELAY=")+6, data.indexOf("&", data.indexOf("DELAY=")));
-                subject = data.substring(data.indexOf("SUBJECT=")+8, data.indexOf("&", data.indexOf("SUBJECT=")));
-		message = data.substring(data.indexOf("MESSAGE=")+8, data.indexOf("&SENDBUTTON=Send"));
-                sendTime = sendTime.getInstance();
-                status = "QUEUED";
+        subject = data.substring(data.indexOf("SUBJECT=")+8, data.indexOf("&", data.indexOf("SUBJECT=")));
+		message = data.substring(data.indexOf("MESSAGE=")+8, data.indexOf("&SENDBUTTON=Submit"));
+		sendTime = sendTime.getInstance();
+        status = "QUEUED";
                 
                 if(tempDelay != null && !tempDelay.equals(null) && !tempDelay.equals("") && !tempDelay.equals(" "))
                 {
@@ -53,7 +54,7 @@ public class Mail {
 			mailSocket = new Socket(ns.mxLookup(to.split("%40")[1]), 25);
 			out = new BufferedWriter(new OutputStreamWriter(
 					mailSocket.getOutputStream()));
-			in = new BufferedReader(new InputStreamReader(mailSocket.getInputStream(), "ISO-8859-15"));
+			in = new BufferedReader(new InputStreamReader(mailSocket.getInputStream()));
 		} catch (IOException e) {
 			System.out.println("Error connecting to SMTP-server.");
 		}
@@ -108,33 +109,27 @@ public class Mail {
 		String[] splitMessages;
 		if (!message.equals(""))
 		{		
-			splitMessages = message.split("%0A");
+			System.out.println("MESSAGE:" + message);
+			message = message.replace("%28", "=28"); //(
+			message = message.replace("%29", "=29"); //)
+			message = message.replace("%3F", "=3F"); //?	
+			message = message.replace("=", "=3D"); //=
+			
+			
+			splitMessages = message.split("\n");
 			if (splitMessages.length > 1)
 			{
-				for (int i=0; i<(splitMessages.length - 1); i++)
+				for (int i=0; i<splitMessages.length; i++)
 				{
-					System.out.println("HEJ:" + splitMessages[i]);
-					if (splitMessages[i].length() > 76)
-					{
-						result += new StringBuffer(message).insert((75),"=").toString();
-					}
-					result += splitMessages[i];
+					result += splitMessages[i].substring(0,splitMessages[i].length()).concat("=0A");
 				}
+				
+				return result;
 			}
-			
-			result = result.replace("%E5", "=E5"); //å
-			result = result.replace("%E4", "=E4"); //ä
-			result = result.replace("%F6", "=F6"); //ö
-			result = result.replace("%C5", "=C5"); //Å
-			result = result.replace("%C4", "=C4"); //Ä
-			result = result.replace("%D6", "=D6"); //Ö
-			result = result.replace("%28", "=28"); //(
-			result = result.replace("%29", "=29"); //)
-			result = result.replace("%3F", "=3F"); //?	
-			result = result.replace("%3D", "=3D"); //?	
-			
-			return result;
-			
+			else
+			{	
+				return message;
+			}	
 		}
 		
 		return "Auto-fill: No Message";

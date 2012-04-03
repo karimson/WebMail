@@ -32,7 +32,9 @@ public class QueueHandler extends Thread
                         waitingMails.remove(i);
                         
                     } catch (UnsupportedEncodingException ex) {
-                        sentMails.get(i).status = "ERROR SENDING MAIL";
+                        sentMails.add(waitingMails.get(i));
+                        waitingMails.remove(i);
+                    	sentMails.get(i).status = "ERROR SENDING MAIL";
                         System.out.println("Error sending mail");
                     }
                 }
