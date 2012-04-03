@@ -69,11 +69,7 @@ public class Mail {
         send(in, out, "Content-Type: text/plain; charset=iso-8859-1", false);
         send(in, out, "Content-Transfer-Encoding: quoted-printable", false);
         send(in, out, "\n", false);
-        
-        message = message.replace("%", "=");
-        message = message.replace("+", " ");
-        
-    	send(in, out, message, false);
+    	send(in, out, encodeMessage(URLDecoder.decode(message, "ISO-8859-1")), false);
         send(in, out, "\n--=_--", false);
 		send(in, out, "\n.\n", false);
 		send(in, out, "QUIT", true);
@@ -106,7 +102,43 @@ public class Mail {
 			e.printStackTrace();
 		}
 	}
-	
+	public String encodeMessage(String message)
+	{
+		String result = "";
+		String[] splitMessages;
+		if (!message.equals(""))
+		{		
+			splitMessages = message.split("%0A");
+			if (splitMessages.length > 1)
+			{
+				for (int i=0; i<(splitMessages.length - 1); i++)
+				{
+					System.out.println("HEJ:" + splitMessages[i]);
+					if (splitMessages[i].length() > 76)
+					{
+						result += new StringBuffer(message).insert((75),"=").toString();
+					}
+					result += splitMessages[i];
+				}
+			}
+			
+			result = result.replace("%E5", "=E5"); //å
+			result = result.replace("%E4", "=E4"); //ä
+			result = result.replace("%F6", "=F6"); //ö
+			result = result.replace("%C5", "=C5"); //Å
+			result = result.replace("%C4", "=C4"); //Ä
+			result = result.replace("%D6", "=D6"); //Ö
+			result = result.replace("%28", "=28"); //(
+			result = result.replace("%29", "=29"); //)
+			result = result.replace("%3F", "=3F"); //?	
+			result = result.replace("%3D", "=3D"); //?	
+			
+			return result;
+			
+		}
+		
+		return "Auto-fill: No Message";
+	}
 	public String encodeSubject(String subject)
 	{
 		if (!subject.equals(""))
@@ -114,9 +146,19 @@ public class Mail {
 			subject = subject.replace("+", " ");
 			if (subject.contains("%"))
 			{
-				subject = subject.replace("%", "=?ISO-8859-1?Q?=");
-				return (subject + "?=");
+				subject = subject.replace("%E5", "=?ISO-8859-1?Q?=E5?="); //å
+				subject = subject.replace("%E4", "=?ISO-8859-1?Q?=E4?="); //ä
+				subject = subject.replace("%F6", "=?ISO-8859-1?Q?=F6?="); //ö
+				subject = subject.replace("%C5", "=?ISO-8859-1?Q?=C5?="); //Å
+				subject = subject.replace("%C4", "=?ISO-8859-1?Q?=C4?="); //Ä
+				subject = subject.replace("%D6", "=?ISO-8859-1?Q?=D6?="); //Ö
+				subject = subject.replace("%28", "=?ISO-8859-1?Q?=28?="); //(
+				subject = subject.replace("%29", "=?ISO-8859-1?Q?=29?="); //)
+				subject = subject.replace("%3F", "=?ISO-8859-1?Q?=3F?="); //?	
+				
+				
 			}
+			return (subject);
 		}
 		
 		return "Auto-fill: No Subject";

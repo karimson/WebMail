@@ -43,20 +43,19 @@ public class ThreadHandler extends Thread
 			
 			if (charsRead != 0)
 			{
-				String proccessedLine;
+				String processedLine;
 				int inLineLength = inputLine.split("(\r\n|\r|\n)").length;
 				for (int i = 0; i < inLineLength; i++)
 				{
-					proccessedLine = inputLine.split("(\r\n|\r|\n)")[i];
-					if (proccessedLine.equals(""))
+					processedLine = inputLine.split("(\r\n|\r|\n)")[i];
+					if (processedLine.equals(""))
 					{
 						continue;
 					}
-					rrh.processRequest(proccessedLine, httpModel);
+					rrh.processRequest(processedLine, httpModel);
 				}
 				          
-				System.out.println(httpModel.type);
-	                                
+				System.out.println(httpModel.type);                   
 				if (httpModel.type.equals("GET") || httpModel.type.equals("POST"))
 				{
                                     if(httpModel.path.equals("/") || httpModel.path.equals("/status"))
