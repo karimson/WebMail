@@ -49,12 +49,12 @@ public class QueueHandler extends Thread
     {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         
-        result = "--- STATUS PAGE ---\nSENDTIME\t\tFROM\t\t\tTO\t\t\tSTATUS\n";
+        result = "--- STATUS PAGE ---\nSUBMITTED\t\tSENDTIME\t\tFROM\t\t\tTO\t\t\tSUBJECT\t\t\tSTATUS\n";
         
         for(int i = 0; sentMails.size()>i; i++)
-            result += dateFormat.format(sentMails.get(i).sendTime.getTime()) + "\t" + URLDecoder.decode(sentMails.get(i).from, "UTF-8") + "\t" + URLDecoder.decode(sentMails.get(i).to, "UTF-8") + "\t\t" + sentMails.get(i).status + "\n";
+            result += dateFormat.format(sentMails.get(i).submitTime.getTime()) + "\t" + dateFormat.format(sentMails.get(i).sendTime.getTime()) + "\t" + URLDecoder.decode(sentMails.get(i).from, "UTF-8") + "\t" + URLDecoder.decode(sentMails.get(i).to, "UTF-8") + "\t\t" + sentMails.get(i).encodeSubject(sentMails.get(i).subject) + "\t\t" + sentMails.get(i).status + "\n";
         for(int i = 0; waitingMails.size()>i; i++)
-            result += dateFormat.format(waitingMails.get(i).sendTime.getTime()) + "\t" + URLDecoder.decode(waitingMails.get(i).from, "UTF-8") + "\t" + URLDecoder.decode(waitingMails.get(i).to, "UTF-8") + "\t\t" + waitingMails.get(i).status +"\n";
+            result += dateFormat.format(waitingMails.get(i).submitTime.getTime()) + "\t" + dateFormat.format(waitingMails.get(i).sendTime.getTime()) + "\t" + URLDecoder.decode(waitingMails.get(i).from, "UTF-8") + "\t" + URLDecoder.decode(waitingMails.get(i).to, "UTF-8") + "\t\t" + waitingMails.get(i).encodeSubject(waitingMails.get(i).subject) + "\t\t" + waitingMails.get(i).status +"\n";
         
         return result;
     }

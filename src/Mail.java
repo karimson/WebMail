@@ -21,6 +21,7 @@ public class Mail {
 	String output = "";
         int delay;
         Calendar sendTime;
+        Calendar submitTime;
         String status;
 
 	public void parseMailData(String data) 
@@ -31,6 +32,7 @@ public class Mail {
                 subject = data.substring(data.indexOf("SUBJECT=")+8, data.indexOf("&", data.indexOf("SUBJECT=")));
 		message = data.substring(data.indexOf("MESSAGE=")+8, data.indexOf("&SENDBUTTON=Send"));
                 sendTime = sendTime.getInstance();
+                submitTime = submitTime.getInstance();
                 status = "QUEUED";
                 
                 if(tempDelay != null && !tempDelay.equals(null) && !tempDelay.equals("") && !tempDelay.equals(" "))
