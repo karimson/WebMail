@@ -25,39 +25,42 @@ public class Mail {
 
 	public void parseMailData(String data) 
 	{
-		System.out.println(data);
-		from = data.substring(data.indexOf("FROM=")+5, data.indexOf("&", data.indexOf("FROM=")));
-		to = data.substring(data.indexOf("TO=") + 3, data.indexOf("&", data.indexOf("TO=")));
-		String tempDelay = data.substring(data.indexOf("DELAY=")+6, data.indexOf("&", data.indexOf("DELAY=")));
-        subject = data.substring(data.indexOf("SUBJECT=")+8, data.indexOf("&", data.indexOf("SUBJECT=")));
-		message = data.substring(data.indexOf("MESSAGE=")+8, data.indexOf("&SENDBUTTON=Submit"));
-	    sendTime = sendTime.getInstance();
-        submitTime = submitTime.getInstance();
-        status = "QUEUED";
+            from = data.substring(data.indexOf("FROM=")+5, data.indexOf("&", data.indexOf("FROM=")));
+            to = data.substring(data.indexOf("TO=") + 3, data.indexOf("&", data.indexOf("TO=")));
+            String tempDelay = data.substring(data.indexOf("DELAY=")+6, data.indexOf("&", data.indexOf("DELAY=")));
+            subject = data.substring(data.indexOf("SUBJECT=")+8, data.indexOf("&", data.indexOf("SUBJECT=")));
+            message = data.substring(data.indexOf("MESSAGE=")+8, data.indexOf("&SENDBUTTON=Submit"));
+            sendTime = sendTime.getInstance();
+            submitTime = submitTime.getInstance();
+            status = "QUEUED";
 	            
-        if(tempDelay != null && !tempDelay.equals(null) && !tempDelay.equals("") && !tempDelay.equals(" "))
-        {
-            delay = Integer.parseInt(tempDelay);
-            sendTime.add(Calendar.SECOND,delay);
-        }
-                
-                 
+            if(tempDelay != null && !tempDelay.equals(null) && !tempDelay.equals("") && !tempDelay.equals(" "))
+            {
+                delay = Integer.parseInt(tempDelay);
+                sendTime.add(Calendar.SECOND,delay);
+            }         
 	}
 
 	public void sendMail() throws UnsupportedEncodingException {
-		try {
+		try 
+                {
                         NsLookup ns = new NsLookup();
                         String mxServer = ns.mxLookup(to.split("%40")[1]);
                         
                         if(mxServer == "")
+                        {
                             status = "SERVER NOT FOUND";
-                        
+                            out.write("SMTP server could not be found."); 
+                       }
 			mailSocket = new Socket(ns.mxLookup(to.split("%40")[1]), 25);
 			out = new BufferedWriter(new OutputStreamWriter(
 					mailSocket.getOutputStream()));
 			in = new BufferedReader(new InputStreamReader(mailSocket.getInputStream()));
-		} catch (IOException e) {
+                } 
+                catch (IOException e) 
+                {
 			System.out.println("Error connecting to SMTP-server.");
+                        status = "COULD NOT CONNECT TO SERVER";
 		}
 		send(in, out, "HELO someone.somebody.se", true);
 		send(in, out, "MAIL FROM: <" + URLDecoder.decode(from, "UTF-8") + ">", true);
@@ -66,23 +69,27 @@ public class Mail {
 		send(in, out, "Subject: " + encodeSubject(subject), false);
 		send(in, out, "From: <" + URLDecoder.decode(from, "UTF-8") + ">", false);
 		send(in, out, "MIME-Version: 1.0", false);
-        send(in, out, "Content-Type: multipart/mixed; boundary=\"=_\"", false);
-        send(in, out, "--=_", false);
-        send(in, out, "Content-Type: text/plain; charset=iso-8859-1", false);
-        send(in, out, "Content-Transfer-Encoding: quoted-printable", false);
-        send(in, out, "\n", false);
-    	send(in, out, encodeMessage(URLDecoder.decode(message, "ISO-8859-1")), false);
-        send(in, out, "\n--=_--", false);
-		send(in, out, "\n.\n", false);
+                send(in, out, "Content-Type: multipart/mixed; boundary=\"=_\"", false);
+                send(in, out, "--=_", false);
+                send(in, out, "Content-Type: text/plain; charset=iso-8859-1", false);
+                send(in, out, "Content-Transfer-Encoding: quoted-printable", false);
+                send(in, out, "\n", false);
+                send(in, out, encodeMessage(URLDecoder.decode(message, "ISO-8859-1")), false);
+                send(in, out, "\n--=_--", false);
+                send(in, out, "\n.\n", false);
 		send(in, out, "QUIT", true);
 		
-		try {
+		try 
+                {
 			mailSocket.close();
 			out.close();
 			in.close();
-		} catch (IOException e) {
+		} 
+                catch (IOException e) 
+                {
 			e.printStackTrace();
 		}
+                
                 status = "SENT";
 	}
 
@@ -92,11 +99,9 @@ public class Mail {
 		{
 			out.write(cmd + "\n");				
 			out.flush();
-			System.out.println(cmd);
 			if (blocking)
 			{
 				String response = in.readLine();
-				System.out.println(response);
 			}
 		} 
 		catch (Exception e) 
@@ -110,12 +115,10 @@ public class Mail {
 		String[] splitMessages;
 		if (!message.equals(""))
 		{		
-			System.out.println("MESSAGE:" + message);
 			message = message.replace("%28", "=28"); //(
 			message = message.replace("%29", "=29"); //)
 			message = message.replace("%3F", "=3F"); //?	
 			message = message.replace("=", "=3D"); //=
-			
 			
 			splitMessages = message.split("\n");
 			if (splitMessages.length > 1)
@@ -151,8 +154,6 @@ public class Mail {
 				subject = subject.replace("%28", "=?ISO-8859-1?Q?=28?="); //(
 				subject = subject.replace("%29", "=?ISO-8859-1?Q?=29?="); //)
 				subject = subject.replace("%3F", "=?ISO-8859-1?Q?=3F?="); //?	
-				
-				
 			}
 			return (subject);
 		}

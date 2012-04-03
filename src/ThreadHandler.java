@@ -54,8 +54,7 @@ public class ThreadHandler extends Thread
 					}
 					rrh.processRequest(processedLine, httpModel);
 				}
-				          
-				System.out.println(httpModel.type);                   
+				                   
 				if (httpModel.type.equals("GET") || httpModel.type.equals("POST"))
 				{
                                     if(httpModel.path.equals("/") || httpModel.path.equals("/status"))
@@ -74,13 +73,12 @@ public class ThreadHandler extends Thread
 				}
 				else
 				{
-					System.out.println("Command not supported");
+					out.write("HTTP command not supported");
 				}
 				
 				out.close();
 				in.close();
 				socket.close();
-				System.out.println("Thread closed");
 			}	
 		}
 		catch(IOException e)

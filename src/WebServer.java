@@ -7,7 +7,6 @@ public class WebServer
 {
 	private static boolean listen;
 	
-	
 	public static void main(String [] args) throws UnsupportedEncodingException
 	{
 		listen = true;
@@ -27,8 +26,6 @@ public class WebServer
 		
                 QueueHandler queue = new QueueHandler();
                 queue.start();
-                
-                System.out.println("Queue thread started..");
                                
 		while(listen)
 		{
@@ -37,7 +34,6 @@ public class WebServer
 				Socket clientSocket = serverSocket.accept();
 				ThreadHandler handler = new ThreadHandler(clientSocket, queue);
 				handler.start();
-				System.out.println("Connection accepted");
 			} 
                         catch (IOException e) 
                         {
