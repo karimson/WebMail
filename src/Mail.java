@@ -6,7 +6,6 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Calendar;
 
 public class Mail {
@@ -21,6 +20,7 @@ public class Mail {
 	String output = "";
     int delay;
     Calendar sendTime;
+    Calendar submitTime;
     String status;
 
 	public void parseMailData(String data) 
@@ -31,14 +31,15 @@ public class Mail {
 		String tempDelay = data.substring(data.indexOf("DELAY=")+6, data.indexOf("&", data.indexOf("DELAY=")));
         subject = data.substring(data.indexOf("SUBJECT=")+8, data.indexOf("&", data.indexOf("SUBJECT=")));
 		message = data.substring(data.indexOf("MESSAGE=")+8, data.indexOf("&SENDBUTTON=Submit"));
-		sendTime = sendTime.getInstance();
+	    sendTime = sendTime.getInstance();
+        submitTime = submitTime.getInstance();
         status = "QUEUED";
-                
-                if(tempDelay != null && !tempDelay.equals(null) && !tempDelay.equals("") && !tempDelay.equals(" "))
-                {
-                    delay = Integer.parseInt(tempDelay);
-                    sendTime.add(Calendar.SECOND,delay);
-                }
+	            
+        if(tempDelay != null && !tempDelay.equals(null) && !tempDelay.equals("") && !tempDelay.equals(" "))
+        {
+            delay = Integer.parseInt(tempDelay);
+            sendTime.add(Calendar.SECOND,delay);
+        }
                 
                  
 	}
